@@ -21,7 +21,7 @@ Only admin can register address at this step, users have to wait the next step
 
 Registered Users can send proposals with proposals form
 
-### 3) Voting Session Testing
+### 3) Voting Session
 
 Registered Users can vote for one proposal with voting form
 
