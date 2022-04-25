@@ -30,7 +30,7 @@ export default class AddVoterForm extends Component {
   render() {
     return (
       <form>
-        <h2>Add Voters</h2>
+        <h3>Add Voters</h3>
 
         {this.state.voters.map((voter, idx) => (
           <div className="voter" key={idx}>

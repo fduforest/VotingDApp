@@ -28,3 +28,7 @@ Registered Users can vote for one proposal with voting form
 ### 4) Tally Session
 
 Users can discover the winner !
+
+## Video Demo
+
+https://www.loom.com/share/8d1dc267494245a3a72b060a5287a0a3

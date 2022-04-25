@@ -15,7 +15,6 @@ export default class ProposalForm extends Component {
     this.setState({ value: event.target.value })
   }
   handleSubmit(event) {
-    alert("Le nom a été soumis : " + this.state.value)
     event.preventDefault()
     this.state.props.contract.methods
       .setVote(this.state.value)
@@ -25,7 +24,7 @@ export default class ProposalForm extends Component {
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <h2>Vote for a Proposal</h2>
+        <h3>Vote for a Proposal</h3>
         <select onChange={this.handleChange}>
           {this.props.proposals.map((proposal, i) => (
             <option key={i} value={i}>

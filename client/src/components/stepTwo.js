@@ -2,14 +2,12 @@ import React from "react"
 import ProposalForm from "./forms/proposalForm"
 
 function StepTwo(props) {
-  const activeStep = props.activeStep
-
-  if (activeStep === 1) {
+  if (props.workflowStatus && props.workflowStatus === 1) {
     return <ProposalForm accounts={props.accounts} contract={props.contract} />
   }
   return (
     <>
-      <h2>Proposal Session Ended</h2>
+      <h2>Proposal Session not Started</h2>
       <p>Wait for Voting session starting</p>
       <div className="loader text-center"></div>
     </>

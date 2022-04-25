@@ -18,8 +18,11 @@ class App extends Component {
     onChainValue: 0,
     userAddress: null,
     activeStep: 0,
+    workflowStatus: 0,
     proposals: [],
     isOwner: false,
+    isRegistered: false,
+    hasVoted: false,
     winningProposal: [{ description: null, voteCount: 0 }],
     steps: [
       { name: "StepOne", component: <StepOne /> },
@@ -60,7 +63,6 @@ class App extends Component {
       })
 
       // Check if the user is the owner
-
       const owner = await instance.methods.owner().call()
       if (account === owner) {
         this.setState({
@@ -68,13 +70,38 @@ class App extends Component {
         })
       }
 
-      console.log(this.state.isOwner)
+      // Add admin as a voter
+      /*
+      if (this.state.isOwner === true && this.state.isRegistered === false) {
+        await instance.methods.addVoter(account).send({ from: accounts[0] })
+        this.setState({
+          isRegistered: true,
+        })
+      }
+      */
+
+      // Check if the user has voted
+      /*
+      const voter = await instance.methods
+        .getVoter(account)
+        .call({ from: account })
+      console.log("voter.hasVoted", voter.hasVoted)
+      if (voter.hasVoted === true) {
+        this.setState({
+          hasVoted: true,
+        })
+      }
+      */
 
       // get Workflow status
       let workflowStatus = parseInt(
         await instance.methods.workflowStatus().call(),
         10
       )
+      console.log("workflowStatus", workflowStatus)
+      this.setState({
+        workflowStatus: workflowStatus,
+      })
       if (workflowStatus === 1 || workflowStatus === 2) {
         this.setState({
           activeStep: 1,
@@ -89,8 +116,9 @@ class App extends Component {
         })
       }
 
-      // getProposals
+      console.log("this.state.activeStep", this.state.activeStep)
 
+      // getProposals
       const proposals = await instance.methods
         .getProposals()
         .call({ from: accounts[0] })
@@ -99,7 +127,6 @@ class App extends Component {
       })
 
       // getWinningProposal
-
       let winningProposalID = parseInt(
         await instance.methods.winningProposalID().call({ from: accounts[0] })
       )
@@ -118,7 +145,6 @@ class App extends Component {
         }
       }
 
-      //userAddress = account.slice(0, 6) + "..." + account.slice(0, 4)
       this.setState({
         steps: [
           {
@@ -137,7 +163,7 @@ class App extends Component {
               <StepTwo
                 accounts={this.state.accounts}
                 contract={this.state.contract}
-                activeStep={this.state.activeStep}
+                workflowStatus={this.state.workflowStatus}
               />
             ),
           },
@@ -147,8 +173,9 @@ class App extends Component {
               <StepThree
                 accounts={this.state.accounts}
                 contract={this.state.contract}
-                activeStep={this.state.activeStep}
+                workflowStatus={this.state.workflowStatus}
                 proposals={this.state.proposals}
+                hasVoted={this.state.hasVoted}
               />
             ),
           },
@@ -158,7 +185,7 @@ class App extends Component {
               <StepFour
                 accounts={this.state.accounts}
                 contract={this.state.contract}
-                activeStep={this.state.activeStep}
+                workflowStatus={this.state.workflowStatus}
                 winningProposal={this.state.winningProposal}
               />
             ),
@@ -179,10 +206,8 @@ class App extends Component {
     await contract.methods
       .startProposalsRegistering()
       .send({ from: accounts[0] })
-    /*this.setState({
-      workflowStatus: 1,
-    })*/
   }
+
   endProposalsRegistering = async () => {
     const { accounts, contract } = this.state
     await contract.methods.endProposalsRegistering().send({ from: accounts[0] })
@@ -206,11 +231,6 @@ class App extends Component {
   newRegistrationSession = async () => {
     const { accounts, contract } = this.state
     await contract.methods.newRegistrationSession().send({ from: accounts[0] })
-  }
-
-  addVoter = async () => {
-    const { accounts, contract } = this.state
-    await contract.methods.addVoter().send({ from: accounts[0] })
   }
 
   render() {
@@ -308,6 +328,8 @@ class App extends Component {
                       steps={this.state.steps}
                       showNavigation={false}
                     />
+
+                    <h2>Admin Arera</h2>
 
                     <AddVoterForm
                       accounts={this.state.accounts}

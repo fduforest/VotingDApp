@@ -2,11 +2,7 @@ import React from "react"
 import VotingForm from "./forms/votingForm"
 
 function StepThree(props) {
-  const activeStep = props.activeStep
-
-  console.log("props.proposals", props.proposals)
-
-  if (activeStep === 2) {
+  if (props.workflowStatus && props.workflowStatus === 3) {
     return (
       <VotingForm
         accounts={props.accounts}
@@ -17,7 +13,7 @@ function StepThree(props) {
   }
   return (
     <>
-      <h2>Voting Session not started</h2>
+      <h3>Voting Session not started</h3>
       <p>Wait for Voting session starting</p>
 
       <div className="loader text-center"></div>
@@ -34,6 +30,7 @@ export default (props) => {
         accounts={props.accounts}
         contract={props.contract}
         proposals={props.proposals}
+        hasVoted={props.hasVoted}
       />
     </div>
   )
