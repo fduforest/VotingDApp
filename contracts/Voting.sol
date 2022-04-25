@@ -3,6 +3,11 @@
 pragma solidity 0.8.13;
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
+/// @title A simple Voting contract
+/// @author François Duforest
+/// @notice Use this contract for only the most basic simulation
+/// @dev Contract still under development
+
 contract Voting is Ownable {
     // arrays for draw, uint for single
     // uint[] winningProposalsID;
@@ -51,6 +56,9 @@ contract Voting is Ownable {
 
     // ::::::::::::: GETTERS ::::::::::::: //
 
+    /// @notice Function for only voters to fetch a voter
+    /// @param _addr The address of the voter
+    /// @return Voter The voter found
     function getVoter(address _addr)
         external
         view
@@ -60,6 +68,9 @@ contract Voting is Ownable {
         return voters[_addr];
     }
 
+    /// @notice Function for only voters to fetch a proposal
+    /// @param _id The id of the proposal
+    /// @return Proposal The proposal found
     function getOneProposal(uint256 _id)
         external
         view
@@ -69,12 +80,16 @@ contract Voting is Ownable {
         return proposalsArray[_id];
     }
 
+    /// @notice Function to fetch all proposals
+    /// @return proposalsArray The proposal array found
     function getProposals() external view returns (Proposal[] memory) {
         return proposalsArray;
     }
 
     // ::::::::::::: REGISTRATION ::::::::::::: //
 
+    /// @notice Function for only admin to add a voter
+    /// @param _addr The address to register as a voter
     function addVoter(address _addr) external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.RegisteringVoters,
@@ -97,6 +112,8 @@ contract Voting is Ownable {
 
     // ::::::::::::: PROPOSAL ::::::::::::: //
 
+    /// @notice Function for only voters to add a proposal
+    /// @param _desc The description of the proposal
     function addProposal(string memory _desc) external onlyVoters {
         require(
             workflowStatus == WorkflowStatus.ProposalsRegistrationStarted,
@@ -116,6 +133,8 @@ contract Voting is Ownable {
 
     // ::::::::::::: VOTE ::::::::::::: //
 
+    /// @notice Function for only voters to vote for a proposal
+    /// @param _id The id of the proposal
     function setVote(uint256 _id) external onlyVoters {
         require(
             workflowStatus == WorkflowStatus.VotingSessionStarted,
@@ -157,6 +176,7 @@ contract Voting is Ownable {
      *
      */
 
+    /// @notice Function for only admin to start a proposal registration session
     function startProposalsRegistering() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.RegisteringVoters,
@@ -169,6 +189,7 @@ contract Voting is Ownable {
         );
     }
 
+    /// @notice Function for only admin to end a proposal registration session
     function endProposalsRegistering() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.ProposalsRegistrationStarted,
@@ -181,6 +202,7 @@ contract Voting is Ownable {
         );
     }
 
+    /// @notice Function for only admin to start a voting session
     function startVotingSession() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.ProposalsRegistrationEnded,
@@ -193,6 +215,7 @@ contract Voting is Ownable {
         );
     }
 
+    /// @notice Function for only admin to stop a voting session
     function endVotingSession() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.VotingSessionStarted,
@@ -230,6 +253,7 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.VotesTallied);
     } */
 
+    /// @notice Function for only admin to tally votes & set the winner
     function tallyVotes() external onlyOwner {
         require(
             workflowStatus == WorkflowStatus.VotingSessionEnded,
@@ -253,6 +277,7 @@ contract Voting is Ownable {
         );
     }
 
+    /// @notice Function for only admin to start a new registration session
     function newRegistrationSession() public onlyOwner {
         require(
             workflowStatus == WorkflowStatus.VotesTallied,
